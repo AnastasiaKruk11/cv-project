@@ -1,0 +1,33 @@
+{
+    "login_page": {
+        "welcome": "Welcome back",
+        "greeting": "Hello again!",
+        "login_ask": "Log in to continue",
+        "log_in": "log in",
+        "sign_up": "sign up",
+        "email": "Email",
+        "password": "Password",
+        "forgot_pass": "Forgot password"
+    },
+
+    "sign_up_page": {
+        "register": "Register now",
+        "greeting": "Welcome! Sign up to continue",
+        "create": "Create account",
+        "existing_account": "I have an account"
+    },
+
+    "recover_page": {
+        "forgot": "Forgot password",
+        "instructions": "We will send you an email with further instructions",
+        "reset": "Reset password",
+        "cancel": "Cancel"
+    },
+
+    "user_page": {
+        "employees": "Employees",
+        "skills": "Skills",
+        "languages": "Languages",
+        "cvs": "CVs"
+    }
+}
