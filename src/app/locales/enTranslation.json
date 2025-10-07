@@ -28,6 +28,15 @@
         "employees": "Employees",
         "skills": "Skills",
         "languages": "Languages",
-        "cvs": "CVs"
+        "cvs": "CVs",
+        "profile": "profile",
+        "avatar_upload": "Upload avatar image",
+        "file_format": "png, jpg or gif no more than 0.5MB",
+        "member_since": "A member since ",
+        "first_name": "First Name",
+        "last_name": "Last Name",
+        "department": "Department",
+        "position": "Position",
+        "update": "Update"
     }
 }

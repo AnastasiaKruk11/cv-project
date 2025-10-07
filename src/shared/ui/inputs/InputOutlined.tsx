@@ -8,9 +8,10 @@ export const InputOutlined = ({ labelText, ...rest }: InputOutlinedProps) => {
     return (
         <TextField variant="outlined" margin="dense" label={labelText}
         sx={{
+            minWidth: 410,
             '& .MuiOutlinedInput-root': {
             '& fieldset': {
-                border: '1px solid grey',
+                border: '1px solid gray',
             },
             '&:hover .MuiOutlinedInput-notchedOutline': {
                 borderColor: 'white',

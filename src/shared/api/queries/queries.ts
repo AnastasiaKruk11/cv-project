@@ -1,6 +1,5 @@
 import { request } from 'graphql-request';
 import type { Query } from '../../../graphql/graphql';
-import { useAuthStore } from '../../store/authStore';
 
 const graphqlEndpoint = 'https://cv-project-js.inno.ws/api/graphql';
 
@@ -22,29 +21,6 @@ export const LOG_IN = async (email: string, password: string): Promise<LoginQuer
 };
 
 
-/*const fetchGraphQLData = async (query, variables) => {
-  const response = await axiosInstance.post('https://cv-project-js.inno.ws/api/graphql', {
-    query {
-      `
-    query user($id: ID!) {
-    user(userId: $id) {
-      id
-      created_at
-      email
-      profile {
-        first_name
-        last_name
-        avatar
-      }
-    }
-  }`
-    },
-    variables,
-  });
-  return response;
-};*/
-
-
 type UserQueryType = Pick<Query, 'user'>
 
 export const GET_USER = async (id?: string, accessToken?: string | null): Promise<UserQueryType> => {
@@ -54,6 +30,12 @@ export const GET_USER = async (id?: string, accessToken?: string | null): Promis
       id
       created_at
       email
+      department {
+        name
+      }
+      position {
+       name
+      }
       profile {
         first_name
         last_name
@@ -65,4 +47,36 @@ export const GET_USER = async (id?: string, accessToken?: string | null): Promis
   const response = await request(graphqlEndpoint, query, { id: id }, [['Authorization', `Bearer ${accessToken}`]])
 
   return response;
-}
+};
+
+type DepartmentsQueryType = Pick<Query, 'departments'>
+
+export const GET_DEPARTMENTS = async (accessToken?: string | null): Promise<DepartmentsQueryType> => {
+  const query = `
+    query GetDepartments {
+    departments {
+      id
+      name
+    }
+  }`
+
+  const response = await request(graphqlEndpoint, query, {}, [['Authorization', `Bearer ${accessToken}`]])
+
+  return response;
+};
+
+type PositionsQueryType = Pick<Query, 'positions'>
+
+export const GET_POSITIONS = async (accessToken?: string | null): Promise<PositionsQueryType> => {
+  const query = `
+    query GetPositions {
+    positions {
+      id
+      name
+    }
+  }`
+
+  const response = await request(graphqlEndpoint, query, {}, [['Authorization', `Bearer ${accessToken}`]])
+
+  return response;
+};
