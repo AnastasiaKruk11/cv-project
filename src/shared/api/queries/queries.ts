@@ -30,11 +30,18 @@ export const GET_USER = async (id?: string, accessToken?: string | null): Promis
       id
       created_at
       email
+      cvs {
+        id
+        name
+      }
+      role
       department {
+        id
         name
       }
       position {
-       name
+        id
+        name
       }
       profile {
         first_name

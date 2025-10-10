@@ -7,8 +7,9 @@ import { ButtonContainedRed } from "../../shared/ui/buttons/ButtonContainedRed";
 import Avatar from '@mui/material/Avatar';
 import { Button } from "@mui/material";
 import { useTranslation } from "react-i18next";
-import { useGetUser, useGetPositions, useGetDepartments } from "../../shared/hooks/custom-hooks";
-import { useState } from "react";
+import { useGetUser, useGetPositions, useGetDepartments } from "../../shared/hooks/query-hooks";
+import { useMutateUserData } from "../../shared/hooks/mutation-hooks";
+import { useForm } from 'react-hook-form';
 
 export const User = () => {
 
@@ -20,18 +21,27 @@ export const User = () => {
 
     const { t: translate } = useTranslation();
 
-    //const setFormData = useFormStore((state) => state.setFormStore);
-
-    const [firstName, setFirstName] = useState(data?.user.profile.first_name);
-    const [lastName, setLastName] = useState(data?.user.profile.last_name);
-    const [department, setDepartment] = useState(data?.user.department?.name);
-    const [position, setPosition] = useState(data?.user.position?.name);
+    const { register, handleSubmit, watch } = useForm();
+    const {mutate} = useMutateUserData();
+    const {firstName, lastName, department, position} = watch();
 
     const valueDiffersFromLast = firstName !== data?.user.profile.first_name || 
-                                     lastName !== data?.user.profile.last_name ||
-                                     department !== data?.user.department?.name ||
-                                     position !== data?.user.position?.name;
-    
+                                 lastName !== data?.user.profile.last_name ||
+                                 department !== data?.user.department?.id ||
+                                 position !== data?.user.position?.id;
+
+    const { cvs, role } = data?.user || {};
+    const cvIds = cvs?.map((item) => item.id) || [];
+    const userId = data?.user.id || '';
+
+    /*useEffect(() => {
+        if(data){
+    setValue("firstName", data?.user.profile.first_name)
+    setValue("department", data?.user.department?.id)
+    setValue("lastName", data?.user.profile.last_name)
+    setValue("position", data?.user.position?.id)
+        }
+    }, [data, setValue])*/
 
     return (
         <div className={'h-full w-full flex'}>
@@ -67,21 +77,24 @@ export const User = () => {
                         <span className={'opacity-60 mt-[8px] mb-[3px]'}>{`${data?.user.email}`}</span>
                         <span>{translate('user_page.member_since')} {new Date(Number(data?.user.created_at)).toDateString()}</span>
                     </div>
-                    <div className={'flex mt-[40px] justify-around max-w-[855px]'}>
+                    
+                    <form className={'flex mt-[40px] justify-around max-w-[855px]'} onSubmit={handleSubmit(() => mutate ({userId, cvsIds: cvIds, departmentId: department, positionId: position, role}))}>
                         <div className={'flex flex-col !mr-[25px]'}>
-                            <InputOutlined labelText={translate('user_page.first_name')} className={'!mb-[20px]'} onChange={event => setFirstName(event.target.value)} />
-                            <SelectOutlined labelText={translate('user_page.department')} items={departmentData?.departments} onChange={event => setDepartment(event.target.value)} />
+                            <InputOutlined labelText={translate('user_page.first_name')} {...register("firstName")} name="firstName" type="text" className={'!mb-[20px]'} />
+                            <SelectOutlined labelText={translate('user_page.department')} {...register("department")} name="department" items={departmentData?.departments} />
                         </div>
                         <div className={'flex flex-col'}>
-                            <InputOutlined labelText={translate('user_page.last_name')} className={'!mb-[20px]'} onChange={event => setLastName(event.target.value)} />
-                            <SelectOutlined labelText={translate('user_page.position')} items={positionData?.positions} className={'!mb-[20px]'} onChange={event => setPosition(event.target.value)} />
+                            <InputOutlined labelText={translate('user_page.last_name')} {...register("lastName")} name="lastName" className={'!mb-[20px]'} />
+                            <SelectOutlined labelText={translate('user_page.position')} {...register("position")} name="position" items={positionData?.positions} className={'!mb-[20px]'} />
                             <ButtonContainedRed 
                             text={translate('user_page.update')} 
-                            className={'!w-[100%] !bg-red-900 !text-white !rounded-[40px] !h-[40px]'}
-                            disabled={!valueDiffersFromLast} 
+                            type="submit"
+                            className={'!w-[100%] !bg-red-900 !text-white !rounded-[40px] !h-[40px] disabled:!bg-gray-600'}
+                            disabled={!valueDiffersFromLast}
                             />
                         </div>
-                    </div>
+                    </form>
+                    
                 </div>
             </div>
         </div>

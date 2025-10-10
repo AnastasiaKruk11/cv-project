@@ -1,6 +1,6 @@
-import { GET_USER, GET_DEPARTMENTS, GET_POSITIONS } from "../../shared/api/queries/queries";
+import { GET_USER, GET_DEPARTMENTS, GET_POSITIONS } from "../api/queries/queries";
 import { useQuery } from '@tanstack/react-query';
-import { useAuthStore } from "../../shared/store/authStore";
+import { useAuthStore } from "../store/authStore";
 
 export const useGetUser = (id: string | undefined) => {
 const { accessToken } = useAuthStore();

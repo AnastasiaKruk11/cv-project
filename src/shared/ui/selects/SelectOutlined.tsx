@@ -34,11 +34,12 @@ export const SelectOutlined = ( {labelText, items, ...rest} ) => {
                         color: 'white',
                     }
                 }}
+                
                 {...rest}
             >
                 {items?.map((item) => {
                     return (
-                        <MenuItem key={item.id} value={item.name}>{item.name}</MenuItem>
+                        <MenuItem key={item.id} value={item.id}>{item.name}</MenuItem>
                     )
                 })}
             </Select>

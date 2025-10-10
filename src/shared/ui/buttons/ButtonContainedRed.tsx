@@ -1,5 +1,5 @@
 import Button from '@mui/material/Button';
-
+//добавь типы!!!
 export const ButtonContainedRed = ( {text, ...rest} ) => {
     return (
         <Button 
