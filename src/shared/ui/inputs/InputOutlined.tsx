@@ -6,12 +6,11 @@ interface InputOutlinedProps extends StandardTextFieldProps {
 
 export const InputOutlined = ({ labelText, value, ...rest }: InputOutlinedProps) => {
     return (
-        <TextField variant="outlined" margin="dense" label={labelText} value={value}
+        <TextField variant="outlined" margin="dense" label={labelText} value={value} fullWidth
        /* InputLabelProps={{
             shrink: !value //проверяй на фолси /труси
         }}*/
         sx={{
-            minWidth: 410,
             '& input:-webkit-autofill': {
                 transition: 'background-color 600000s 0s, color 600000s 0s',
             },

@@ -7,7 +7,7 @@ export const Sidebar = ( {userAvatar, userName} ) => {
     const { t: translate } = useTranslation();
 
     return (
-        <div className={'flex flex-col justify-between h-full w-[calc(100%/5)]'}>
+        <div className={'flex flex-col justify-between h-full min-w-50'}>
             <div className={'flex flex-col mt-[40px]'}>
                 <SideButton text={translate('user_page.employees')} src={'/employees.png'} />
                 <SideButton text={translate('user_page.skills')} src={'/skills.png'} />

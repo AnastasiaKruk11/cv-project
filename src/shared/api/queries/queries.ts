@@ -47,6 +47,11 @@ export const GET_USER = async (id?: string, accessToken?: string | null): Promis
         first_name
         last_name
         avatar
+        skills {
+          name
+          categoryId
+          mastery
+        }
       }
     }
   }`
@@ -78,6 +83,42 @@ export const GET_POSITIONS = async (accessToken?: string | null): Promise<Positi
   const query = `
     query GetPositions {
     positions {
+      id
+      name
+    }
+  }`
+
+  const response = await request(graphqlEndpoint, query, {}, [['Authorization', `Bearer ${accessToken}`]])
+
+  return response;
+};
+
+type SkillsQueryType = Pick<Query, 'skills'>
+
+export const GET_SKILLS = async (accessToken?: string | null): Promise<SkillsQueryType> => {
+  const query = `
+    query GetSkills {
+    skills {
+      id
+      name
+      category {
+        id
+        name
+      }
+    }
+  }`
+
+  const response = await request(graphqlEndpoint, query, {}, [['Authorization', `Bearer ${accessToken}`]])
+
+  return response;
+};
+
+type SkillGroupsQueryType = Pick<Query, 'skillCategories'>
+
+export const GET_SKILL_GROUPS = async (accessToken?: string | null): Promise<SkillGroupsQueryType> => {
+  const query = `
+    query GetSkillGroups {
+    skillCategories {
       id
       name
     }

@@ -35,3 +35,25 @@ export const UPDATE_USER = async (userId: string, cvsIds: InputMaybe<string[]>, 
   return response;
 
 };
+
+export const DOWNLOAD_AVATAR = async (userId: string, base64: string, size: number, type: string, accessToken?: string | null) : Promise<string> => {
+  const query = `
+    mutation UploadAvatarInput($userId: ID!, $base64: String!, $size: Int!, $type: String!) {
+    uploadAvatar(avatar: { userId: $userId, base64: $base64, size: $size, type: $type })
+  }`
+  const response = await request(graphqlEndpoint, query, {userId, base64, size, type}, [['Authorization', `Bearer ${accessToken}`]]);
+  
+  return response;
+
+};
+
+export const DELETE_AVATAR = async (userId: string, accessToken?: string | null) : Promise<void> => {
+  const query = `
+    mutation DeleteAvatarInput($userId: ID!) {
+    deleteAvatar(avatar: { userId: $userId })
+  }`
+  const response = await request(graphqlEndpoint, query, {userId}, [['Authorization', `Bearer ${accessToken}`]]);
+  
+  return response;
+
+};

@@ -5,7 +5,7 @@ import { InputLabel } from "@mui/material";
 
 export const SelectOutlined = ( {labelText, items, ...rest} ) => {
     return (
-        <FormControl sx={{ minWidth: 410 }}>
+        <FormControl fullWidth>
             <InputLabel
                 sx={{
                 color: 'white',
