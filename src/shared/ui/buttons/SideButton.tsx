@@ -1,6 +1,10 @@
-import { Button } from "@mui/material";
+import Button, { type ButtonProps } from '@mui/material/Button';
+interface ButtonType extends ButtonProps {
+    text: string,
+    src: string
+}
 
-export const SideButton = ( {text, src, ...rest} ) => {
+export const SideButton = ( {text, src, ...rest}: ButtonType ) => {
     return (
         <div className={'w-[calc(100%/5)'}>
             <Button className={'!w-[100%] !h-[56px] !rounded-tr-full !rounded-br-full !text-white !flex'} {...rest}>

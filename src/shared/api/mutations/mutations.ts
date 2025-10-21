@@ -57,3 +57,18 @@ export const DELETE_AVATAR = async (userId: string, accessToken?: string | null)
   return response;
 
 };
+
+type DeleteProfileQueryType = Pick<Mutation, 'deleteProfileSkill'>
+
+export const DELETE_SKILLS = async (userId: string, name: string[], accessToken?: string | null) : Promise<DeleteProfileQueryType> => {
+  const query = `
+    mutation DeleteProfileSkill($userId: ID!, $name: [String!]!) {
+    deleteProfileSkill(skill: { userId: $userId, name: $name }) {
+      id
+    }
+  }`
+  const response = await request(graphqlEndpoint, query, {userId, name}, [['Authorization', `Bearer ${accessToken}`]]);
+  
+  return response;
+
+};

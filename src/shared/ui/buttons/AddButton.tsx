@@ -1,14 +1,14 @@
-import { Button } from "@mui/material";
+import Button, { type ButtonProps } from '@mui/material/Button';
 import AddIcon from '@mui/icons-material/Add';
 
-type ButtonTextType = {
+interface ButtonTextType extends ButtonProps {
     btnText: string
 }
 
-export const AddButton = ( {btnText} : ButtonTextType ) => {
+export const AddButton = ( {btnText, ...rest} : ButtonTextType ) => {
 
     return (
-        <Button variant="text" className={'!text-gray-400 !w-55 !mx-10'}>
+        <Button variant="text" className={'!text-gray-400 !w-55 !mx-10'} {...rest}>
             <AddIcon className={'!mr-3'} />{btnText}
         </Button>
     )

@@ -1,9 +1,9 @@
 type UserLevelType = {
     userLevel: 'Novice' | 'Advanced' | 'Competent' | 'Proficient' | 'Expert',
     skillName: string
-}
+} & React.ButtonHTMLAttributes<HTMLButtonElement>
 
-export const Progressbar = ( { userLevel, skillName } : UserLevelType ) => {
+export const Progressbar: React.FC<UserLevelType> = ( { userLevel, skillName, ...rest } ) => {
 
     let progress = '';
     let color = '';
@@ -36,7 +36,7 @@ export const Progressbar = ( { userLevel, skillName } : UserLevelType ) => {
     }
 
     return (
-        <button className={'flex items-center m-1 p-3 cursor-pointer rounded-full hover:bg-gray-900 active:scale-95'}>
+        <button data-id={skillName} {...rest} className={'flex items-center m-1 p-3 cursor-pointer rounded-full hover:bg-gray-900 active:scale-95'}>
             <div className="w-[80px] bg-gray-700 rounded-full h-[4px] mr-[10px]">
                 <div className={`h-[4px] rounded-full`} style={{backgroundColor: `${color}`, width: `${progress}`}}></div>
             </div>

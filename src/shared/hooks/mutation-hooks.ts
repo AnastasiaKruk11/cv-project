@@ -1,7 +1,7 @@
 import { useMutation } from '@tanstack/react-query';
 import { useAuthStore } from "../store/authStore";
-import { UPDATE_USER, DOWNLOAD_AVATAR, DELETE_AVATAR } from '../api/mutations/mutations';
-import type { UpdateUserInput, UploadAvatarInput, DeleteAvatarInput } from '../../graphql/graphql';
+import { UPDATE_USER, DOWNLOAD_AVATAR, DELETE_AVATAR, DELETE_SKILLS } from '../api/mutations/mutations';
+import type { UpdateUserInput, UploadAvatarInput, DeleteAvatarInput, DeleteProfileSkillInput } from '../../graphql/graphql';
 import { useQueryClient } from '@tanstack/react-query';
 
 export const useMutateUserData = () => {
@@ -50,6 +50,27 @@ const queryClient = useQueryClient();
     mutationFn: ( {userId}: DeleteAvatarInput ) => {
         
         return DELETE_AVATAR( userId, accessToken )
+    },
+
+    onSuccess: (data) => {
+        console.log(data);
+        queryClient.invalidateQueries({ queryKey: ['user'] });
+    },
+
+    onError: (error) => {
+        console.error('Error:', error);
+          },
+    })
+}
+
+export const useMutateSkillsDelete = () => {
+const { accessToken } = useAuthStore();
+const queryClient = useQueryClient();
+
+    return useMutation({
+    mutationFn: ( {userId, name}: DeleteProfileSkillInput ) => {
+        
+        return DELETE_SKILLS( userId, name, accessToken )
     },
 
     onSuccess: (data) => {

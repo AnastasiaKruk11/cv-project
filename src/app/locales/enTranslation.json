@@ -38,5 +38,13 @@
         "department": "Department",
         "position": "Position",
         "update": "Update"
+    },
+
+    "skills_page": {
+        "add": "Add skill",
+        "remove": "Remove skills",
+        "cancel": "Cancel",
+        "delete": "Delete",
+        "update": "Update skill"
     }
 }
