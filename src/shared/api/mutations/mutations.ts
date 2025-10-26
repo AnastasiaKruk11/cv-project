@@ -1,5 +1,5 @@
 import { request } from 'graphql-request';
-import type { UserRole, InputMaybe, Mutation } from '../../../graphql/graphql';
+import type { UserRole, InputMaybe, Mutation, Mastery } from '../../../graphql/graphql';
 
 const graphqlEndpoint = 'https://cv-project-js.inno.ws/api/graphql';
 
@@ -68,6 +68,36 @@ export const DELETE_SKILLS = async (userId: string, name: string[], accessToken?
     }
   }`
   const response = await request(graphqlEndpoint, query, {userId, name}, [['Authorization', `Bearer ${accessToken}`]]);
+  
+  return response;
+
+};
+
+type AddSkillQueryType = Pick<Mutation, 'addProfileSkill'>
+
+export const ADD_SKILL = async (userId: string, name: string, categoryId: string, mastery: Mastery, accessToken?: string | null) : Promise<AddSkillQueryType> => {
+  const query = `
+    mutation AddProfileSkill($userId: ID!, $name: String!, $categoryId: ID, $mastery: Mastery!) {
+    addProfileSkill(skill: { userId: $userId, name: $name, categoryId: $categoryId, mastery: $mastery }) {
+      id
+    }
+  }`
+  const response = await request(graphqlEndpoint, query, {userId, name, categoryId, mastery}, [['Authorization', `Bearer ${accessToken}`]]);
+  
+  return response;
+
+};
+
+type UpdateSkillQueryType = Pick<Mutation, 'updateProfileSkill'>
+
+export const UPDATE_SKILL = async (userId: string, name: string, categoryId: string, mastery: Mastery, accessToken?: string | null) : Promise<UpdateSkillQueryType> => {
+  const query = `
+    mutation UpdateProfileSkill($userId: ID!, $name: String!, $categoryId: ID, $mastery: Mastery!) {
+    updateProfileSkill(skill: { userId: $userId, name: $name, categoryId: $categoryId, mastery: $mastery }) {
+      id
+    }
+  }`
+  const response = await request(graphqlEndpoint, query, {userId, name, categoryId, mastery}, [['Authorization', `Bearer ${accessToken}`]]);
   
   return response;
 

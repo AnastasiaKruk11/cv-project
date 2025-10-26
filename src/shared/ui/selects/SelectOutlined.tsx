@@ -34,7 +34,6 @@ export const SelectOutlined = ( {labelText, items, ...rest} ) => {
                         color: 'white',
                     }
                 }}
-                
                 {...rest}
             >
                 {items?.map((item) => {

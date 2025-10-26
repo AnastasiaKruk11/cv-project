@@ -7,28 +7,34 @@ import { SelectOutlined } from '../selects/SelectOutlined';
 import { useGetSkills } from '../../hooks/query-hooks';
 import { ButtonContainedRed } from '../buttons/ButtonContainedRed';
 import { ButtonOutlinedStandard } from '../buttons/ButtonOutlinedStandard';
+import { Mastery } from '../../../graphql/graphql';
 
+interface FormDataType {
+    name: string,
+    mastery: string
+}
 interface ModalPropsType {
     open: boolean,
     dialogTitle: string,
     onClose: () => void,
-    onSubmit: () => void
+    onSubmit: (formData: FormDataType) => void,
+    skillsToExclude: string[] | undefined
 }
 
-const skillMasteries = [{id: 1, name: 'Novice'}, {id: 2, name: 'Advanced'}, {id: 3, name: 'Competent'}, {id: 4, name: 'Proficient'}, {id: 5, name: 'Expert'}]; 
+const skillMasteries = Object.values(Mastery).map((v) => ({id: v, name: v}));
 
-export const AddModal = ({ open, dialogTitle, onClose, onSubmit } : ModalPropsType) => {
+export const AddModal = ({ open, dialogTitle, onClose, onSubmit, skillsToExclude } : ModalPropsType) => {
 
     const { data: skillsData } = useGetSkills();
 
     const [formData, setFormData] = useState({
-        username: '',
-        email: ''
+        name: '',
+        mastery: ''
     });
 
     useEffect(() => {
         if (open) {
-        setFormData({ username: '', email: '' });
+        setFormData({ name: '', mastery: '' });
         }
     }, [open]);
 
@@ -38,10 +44,12 @@ export const AddModal = ({ open, dialogTitle, onClose, onSubmit } : ModalPropsTy
         [event.target.name]: event.target.value
         });
     };
-
     const handleSubmit = () => {
-        onSubmit();
+        onSubmit(formData);
     };
+
+    const items = skillsData?.skills.map(({name}) => ({id: name, name}));
+    const filteredItems = items?.filter(item => !skillsToExclude?.includes(item.name));
 
     return (
         <Dialog 
@@ -61,15 +69,17 @@ export const AddModal = ({ open, dialogTitle, onClose, onSubmit } : ModalPropsTy
             <SelectOutlined
             fullWidth
             labelText="Skill"
-            items={skillsData?.skills}
+            items={filteredItems}
             onChange={handleChange}
             className={'mb-3'}
+            name="name"
             />
             <SelectOutlined
             fullWidth
             labelText="Mastery"
             items={skillMasteries}
             onChange={handleChange}
+            name="mastery"
             />
         </DialogContent>
         <DialogActions>

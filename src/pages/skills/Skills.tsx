@@ -7,14 +7,16 @@ import { useNavigate, generatePath } from 'react-router-dom';
 import { ButtonTextRed } from "../../shared/ui/buttons/ButtonTextRed";
 import { useGetSkillGroups } from "../../shared/hooks/query-hooks";
 import { Progressbar } from "../../shared/ui/progressbar/Progressbar";
-import type { SkillMastery } from "../../graphql/graphql";
+import { Mastery, type SkillMastery } from "../../graphql/graphql";
 import { AddButton } from "../../shared/ui/buttons/AddButton";
 import { DeleteButton } from "../../shared/ui/buttons/DeleteButton";
 import { useState } from "react";
 import { DefaultOutlinedBtn } from "../../shared/ui/buttons/DefaultOutlinedBtn";
 import { DefaultCountBtn } from "../../shared/ui/buttons/DefaultCountBtn";
-import { useMutateSkillsDelete } from "../../shared/hooks/mutation-hooks";
+import { useMutateSkillsDelete, useMutateAddSkill, useMutateUpdateSkill } from "../../shared/hooks/mutation-hooks";
 import { AddModal } from "../../shared/ui/modals/AddModal";
+import { useGetSkills } from "../../shared/hooks/query-hooks";
+import { SnackbarPopUp } from "../../shared/ui/snackbar/SnackbarPopUp";
 
 type GroupItemType = {
   id: string;
@@ -28,20 +30,30 @@ interface GroupSkillType {
     skills: SkillMastery[]
 }
 
+interface FormDataType {
+    name: string,
+    mastery: string
+}
+
 export const Skills = () => {
 
     const {id} = useParams();
     const { data } = useGetUser(id);
     const { data: skillGroupData } = useGetSkillGroups();
+    const { data: skillsData } = useGetSkills();
     const { mutate: deleteSkills } = useMutateSkillsDelete();
+    const { mutate: addSkill, isError } = useMutateAddSkill();
+    const { mutate: updateSkill, isError: hasError } = useMutateUpdateSkill();
     const navigate = useNavigate();
     const { t: translate } = useTranslation(); 
 
     const [selectedItems, setSelectedItems] = useState<string[]>([]);
+    const [currentItem, setCurrentItem] = useState('');
     const [deleteMode, setDeleteMode] = useState(false);
     const [editMode, setEditMode] = useState(true);
     const [isAddModalOpened, setIsAddModalOpened] = useState(false);
     const [isUpdateModalOpened, setIsUpdateModalOpened] = useState(false);
+    const [openSnackbar, setOpenSnackbar] = useState({state: false, text: ''});
 
     const handleCloseAddModal = () => {
         setIsAddModalOpened(false);
@@ -50,9 +62,42 @@ export const Skills = () => {
         setIsUpdateModalOpened(false);
     };
 
-    const handleFormSubmit = () => {
-        // huita s otpravkoy dannyh
+    const handleFormAddSubmit = (formData : FormDataType) => {
+        
+        const category = skillsData?.skills.find((item) => item.name === formData.name);
+        const categoryId = category?.category?.id || '';
+        
+        const dataToSend = {
+            ...formData,
+            categoryId: categoryId
+        };
+        addSkill({userId: id as string, name: dataToSend.name as string, categoryId: dataToSend.categoryId, mastery: dataToSend.mastery as Mastery})
+    
+        if (isError) {
+            setOpenSnackbar({state: true, text: 'Error occured'});
+        } else {
+            setOpenSnackbar({state: true, text: 'Skill was added'}); 
+        }
         handleCloseAddModal();
+    };
+
+    const handleFormUpdateSubmit = (formData : FormDataType) => {
+        
+        const category = skillsData?.skills.find((item) => item.name === formData.name);
+        const categoryId = category?.category?.id || '';
+        
+        const dataToSend = {
+            ...formData,
+            categoryId: categoryId
+        };
+        updateSkill({userId: id as string, name: dataToSend.name as string, categoryId: dataToSend.categoryId, mastery: dataToSend.mastery as Mastery})
+    
+        if (hasError) {
+            setOpenSnackbar({state: true, text: 'Error occured'});
+        } else {
+            setOpenSnackbar({state: true, text: 'Skill was updated'}); 
+        }
+        handleCloseUpdateModal();
     };
     
     const skillGroups = skillGroupData?.skillCategories.reduce((acc, group) => {
@@ -101,10 +146,14 @@ export const Skills = () => {
 
     return (
         <div className={'h-full w-full flex'}>
-            <Sidebar userAvatar={data?.user.profile.avatar} userName={`${data?.user.profile.first_name} ${data?.user.profile.last_name}`} />
+            <Sidebar userAvatar={data?.user.profile.avatar as string} userName={`${data?.user.profile.first_name} ${data?.user.profile.last_name}`} />
             <div className={'w-full'}>
                 <div>
                     <Header firstName={data?.user.profile.first_name as string} lastName={data?.user.profile.last_name as string} ifTailSection tailSectionText={"user_page.skills"} />
+                    <SnackbarPopUp 
+                    openSnackbar={openSnackbar.state} 
+                    text={openSnackbar.text} 
+                    onClose={() => setOpenSnackbar({state: false, text: ''})} />
                 </div>
                 <div>
                     <ButtonTextRed text={translate('user_page.profile')} onClick={() => navigate(generatePath('/user/:id', {id: id as string}))} />
@@ -115,7 +164,7 @@ export const Skills = () => {
                 categories?.map((item) => 
                     <div className={'flex flex-col m-9'}>
                         <span className={'text-white'}>{item.name}</span>
-                        <div className={'flex flex-row'}>
+                        <div className={'flex flex-row flex-wrap'}>
                             {
                                 item.skills.map((item) =>
                                     <div key={item.name} className={'m-3'}>
@@ -124,6 +173,7 @@ export const Skills = () => {
                                                 createArrToDelete(event);
                                             } else {
                                                 setIsUpdateModalOpened(true);
+                                                setCurrentItem(event.currentTarget.dataset.id as string);
                                             }
                                         }} />
                                     </div>
@@ -134,13 +184,22 @@ export const Skills = () => {
                 )}
                 {editMode && <div className={'flex justify-end'}>
                     <AddButton btnText={translate('skills_page.add')} onClick={() => setIsAddModalOpened(true)} />
-                    <AddModal open={isAddModalOpened} dialogTitle={translate('skills_page.add')} onClose={handleCloseAddModal} onSubmit={handleFormSubmit} />
-                    <AddModal open={isUpdateModalOpened} dialogTitle={translate('skills_page.update')} onClose={handleCloseUpdateModal} onSubmit={handleFormSubmit} />
+                    <AddModal open={isAddModalOpened} dialogTitle={translate('skills_page.add')} onClose={handleCloseAddModal} onSubmit={handleFormAddSubmit} skillsToExclude={data?.user.profile.skills.map(item => item.name)} />
+                    <AddModal open={isUpdateModalOpened} dialogTitle={translate('skills_page.update')} onClose={handleCloseUpdateModal} onSubmit={handleFormUpdateSubmit} skillsToExclude={skillsData?.skills.map((item) => item.name).filter((item) => item !== currentItem!)} />
                     <DeleteButton btnText={translate('skills_page.remove')} onClick={() => {setDeleteMode(true); setEditMode(false)}} />
                 </div>}
                 {deleteMode && <div className={'flex justify-end'}>
-                    <DefaultOutlinedBtn btnText={translate('skills_page.cancel')} onClick={() => {setDeleteMode(false); setEditMode(true); setSelectedItems([])}} />
-                    <DefaultCountBtn btnText={translate('skills_page.delete')} onClick={() => {deleteSkills({userId: id as string, name: selectedItems}); setSelectedItems([])}} counter={selectedItems.length} />
+                    <DefaultOutlinedBtn 
+                    btnText={translate('skills_page.cancel')} 
+                    onClick={() => {setDeleteMode(false); setEditMode(true); setSelectedItems([])}} />
+                    <DefaultCountBtn 
+                    btnText={translate('skills_page.delete')} 
+                    onClick={() => {deleteSkills({userId: id as string, name: selectedItems}); 
+                    setSelectedItems([]); 
+                    setOpenSnackbar({state: true, text: 'Skills has been removed'}); 
+                    setDeleteMode(false); 
+                    setEditMode(true)}} 
+                    counter={selectedItems.length} />
                 </div>}
             </div>       
         </div>
