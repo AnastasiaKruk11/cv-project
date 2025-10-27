@@ -52,6 +52,10 @@ export const GET_USER = async (id?: string, accessToken?: string | null): Promis
           categoryId
           mastery
         }
+        languages {
+          name
+          proficiency
+        }
       }
     }
   }`
