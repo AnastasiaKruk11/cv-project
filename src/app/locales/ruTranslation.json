@@ -28,6 +28,23 @@
         "employees": "Сотрудники",
         "skills": "Навыки",
         "languages": "Языки",
-        "cvs": "Резюме"
+        "cvs": "Резюме",
+        "profile": "Профиль",
+        "avatar_upload": "Загрузить фотографию",
+        "file_format": "png, jpg или gif не более, чем 0.5MB",
+        "member_since": "Работает с ",
+        "first_name": "Имя",
+        "last_name": "Фамилия",
+        "department": "Департамент",
+        "position": "Должность",
+        "update": "Обновить"
+    },
+
+    "skills_page": {
+        "add": "Добавить навык",
+        "remove": "Удалить навык",
+        "cancel": "Выход",
+        "delete": "Удалить",
+        "update": "Редактировать навык"
     }
 }

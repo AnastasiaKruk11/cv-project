@@ -1,6 +1,9 @@
-import { Button } from "@mui/material";
+import Button, { type ButtonProps } from '@mui/material/Button';
+interface ButtonType extends ButtonProps {
+    text: string
+}
 
-export const ButtonTextDefault = ( { text, ...rest } ) => {
+export const ButtonTextDefault = ( { text, ...rest }: ButtonType ) => {
     return (
         <Button
         variant="text"

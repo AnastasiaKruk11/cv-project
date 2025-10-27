@@ -46,7 +46,7 @@ export const Register = () => {
     };
 
     return (
-        <div className={'flex flex-col w-full items-center'}>
+        <div className={'flex flex-col w-full items-center h-screen'}>
             <div className={'flex justify-center items-center h-[90px]'}>
                 <ButtonTextRed text={translate('login_page.log_in')} onClick={() => handleClick('/')} />
                 <ButtonTextRed text={translate('login_page.sign_up')} className={'!border-b-1 !text-red-700 !rounded-[0px] !w-[120px] !h-[40px]'} />

@@ -3,11 +3,11 @@ interface ButtonType extends ButtonProps {
     text: string
 }
 
-export const ButtonContainedRed = ( {text, ...rest}: ButtonType ) => {
+export const ButtonOutlinedStandard = ( {text, ...rest}: ButtonType ) => {
     return (
         <Button 
-        variant="contained"
-        className={`!bg-red-900 !text-white !rounded-[40px] !w-[220px] !h-[40px]`}
+        variant="outlined"
+        className={`!text-white !border-gray-500 hover:!border-gray-200 !rounded-[40px] !w-[220px] !h-[43px]`}
         {...rest}>
         {text}
         </Button>

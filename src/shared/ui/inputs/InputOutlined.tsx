@@ -4,13 +4,19 @@ interface InputOutlinedProps extends StandardTextFieldProps {
     labelText: string;
 }
 
-export const InputOutlined = ({ labelText, ...rest }: InputOutlinedProps) => {
+export const InputOutlined = ({ labelText, value, ...rest }: InputOutlinedProps) => {
     return (
-        <TextField variant="outlined" margin="dense" label={labelText}
+        <TextField variant="outlined" margin="dense" label={labelText} value={value} fullWidth
+       /* InputLabelProps={{
+            shrink: !value //проверяй на фолси /труси
+        }}*/
         sx={{
+            '& input:-webkit-autofill': {
+                transition: 'background-color 600000s 0s, color 600000s 0s',
+            },
             '& .MuiOutlinedInput-root': {
             '& fieldset': {
-                border: '1px solid grey',
+                border: '1px solid gray',
             },
             '&:hover .MuiOutlinedInput-notchedOutline': {
                 borderColor: 'white',
